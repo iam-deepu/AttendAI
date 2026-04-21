@@ -91,8 +91,16 @@ async def vector_search_student(query_vector: list, class_code: str, limit: int 
         for s in result.data:
             if not s.get("face_embedding"):
                 continue
-            stored_vec = np.array(s["face_embedding"])
-            similarity = float(np.dot(query_vec, stored_vec))
+            import json
+            emb = s["face_embedding"]
+            if isinstance(emb, str):
+                try:
+                    emb = json.loads(emb)
+                except:
+                    pass
+            stored_vec = np.array(emb, dtype=np.float64)
+            query_vec_f = np.array(query_vector, dtype=np.float64)
+            similarity = float(np.dot(query_vec_f, stored_vec))
 
             if similarity >= similarity_threshold:
                 match_doc = helper(s)

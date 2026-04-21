@@ -284,12 +284,26 @@ async def list_student_classrooms(current_user=Depends(get_current_student)):
         is_pending = roll_no in (doc.get("pending_students") or [])
         if is_approved or is_pending:
             status_val = "approved" if is_approved else "pending"
+            attendance_percentage = 0
+            if is_approved:
+                att_result = database.supabase.table("attendance").select("id", count="exact").eq("class_id", doc["id"]).execute()
+                total_sessions = att_result.count or 0
+                
+                attended = 0
+                if total_sessions > 0:
+                    att_records = database.supabase.table("attendance").select("present_students_list").eq("class_id", doc["id"]).execute()
+                    for rec in att_records.data:
+                        if roll_no in (rec.get("present_students_list") or []):
+                            attended += 1
+                    attendance_percentage = round((attended / total_sessions * 100), 2)
+
             result.append({
                 "class_code": doc["class_code"],
                 "class_name": doc["class_name"],
                 "subject_name": doc["subject_name"],
                 "status": status_val,
-                "teacher_id": str(doc["teacher_id"])
+                "teacher_id": str(doc["teacher_id"]),
+                "attendance_percentage": attendance_percentage
             })
 
     return result
@@ -478,6 +492,56 @@ async def get_classroom_roster(class_code: str, current_user=Depends(get_current
         "pending": pending_details
     }
 
+@app.get("/teacher/export/{class_code}")
+async def export_attendance(class_code: str, token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("role") != RoleEnum.teacher.value:
+             raise HTTPException(status_code=403, detail="Unauthorized")
+        user_id = payload.get("user_id")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    classroom = await database.get_classroom_by_code(class_code)
+    if not classroom or str(classroom["teacher_id"]) != user_id:
+        raise HTTPException(status_code=404, detail="Classroom not found")
+
+    att_records = database.supabase.table("attendance").select("timestamp, present_students_list").eq("class_id", classroom["id"]).order("timestamp").execute()
+    sessions = att_records.data or []
+    
+    approved_roll_nos = classroom.get("student_list") or []
+    
+    data = []
+    for roll_no in approved_roll_nos:
+        stu_res = database.supabase.table("students").select("user_id").eq("roll_no", roll_no).execute()
+        name = "Unknown"
+        if stu_res.data:
+            usr_res = database.supabase.table("users").select("name").eq("id", stu_res.data[0]["user_id"]).execute()
+            if usr_res.data:
+                name = usr_res.data[0]["name"]
+                
+        row = {"Roll Number": roll_no, "Student Name": name}
+        attended = 0
+        for i, s in enumerate(sessions):
+            date_str = s.get("timestamp", f"Session_{i+1}")[:10]
+            col_name = f"Session {i+1} ({date_str})"
+            is_present = roll_no in (s.get("present_students_list") or [])
+            row[col_name] = "Present" if is_present else "Absent"
+            if is_present: attended += 1
+            
+        row["Total Attendance %"] = f"{round((attended / len(sessions) * 100), 2)}%" if sessions else "0%"
+        data.append(row)
+        
+    df = pd.DataFrame(data)
+    stream = io.StringIO()
+    df.to_csv(stream, index=False)
+    
+    return Response(
+        content=stream.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=attendance_{class_code}.csv"}
+    )
+
 @app.post("/teacher/classrooms/{class_code}/approve/{roll_no}")
 async def approve_student(class_code: str, roll_no: str, current_user=Depends(get_current_teacher)):
     classroom = await database.get_classroom_by_code(class_code)
@@ -547,13 +611,19 @@ async def mark_attendance(
     total_unique_people = len(clusters)
 
     for cluster in clusters:
-        cluster_avg = np.mean(cluster, axis=0).tolist()
+        cluster_avg = np.mean(cluster, axis=0)
+        # Normalize so dot-product gives true cosine similarity
+        norm = np.linalg.norm(cluster_avg)
+        if norm > 0:
+            cluster_avg = (cluster_avg / norm).tolist()
+        else:
+            cluster_avg = cluster_avg.tolist()
 
         matches = await database.vector_search_student(
             query_vector=cluster_avg,
             class_code=class_code,
             limit=1,
-            similarity_threshold=0.30
+            similarity_threshold=0.50   # Stricter: must be a genuine match
         )
 
         if matches:
@@ -561,8 +631,17 @@ async def mark_attendance(
             r_no = best_match["roll_no"]
             score = float(best_match.get("score", 0.0))
 
-            if r_no not in recognized_students_best_score or score > recognized_students_best_score[r_no]:
+            if r_no not in recognized_students_best_score:
+                # First (best) cluster to claim this person → recognized
                 recognized_students_best_score[r_no] = score
+            elif score > recognized_students_best_score[r_no]:
+                # This cluster matches better → the old cluster was the unknown
+                unrecognized_count += 1
+                recognized_students_best_score[r_no] = score
+            else:
+                # Another cluster already claimed this person with higher score
+                # → this cluster is a different (unknown) person who slightly resembles them
+                unrecognized_count += 1
         else:
             unrecognized_count += 1
 

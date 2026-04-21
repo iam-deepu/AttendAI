@@ -652,7 +652,7 @@ export default function TeacherUpload({ token }) {
                                         <button onClick={() => setAttendanceResult(null)} className="text-brand-400 hover:text-brand-600 font-bold">Close X</button>
                                     </div>
                                     <div className="p-6">
-                                        <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <div className="grid grid-cols-3 gap-4 mb-6">
                                             <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
                                                 <p className="text-[10px] uppercase font-black text-emerald-600 tracking-widest mb-1">Marked Present</p>
                                                 <p className="text-3xl font-black text-emerald-700">{presentRollNos.size}</p>
@@ -660,6 +660,10 @@ export default function TeacherUpload({ token }) {
                                             <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
                                                 <p className="text-[10px] uppercase font-black text-amber-600 tracking-widest mb-1">Class Strength</p>
                                                 <p className="text-3xl font-black text-amber-700">{roster.approved.length}</p>
+                                            </div>
+                                            <div className="bg-rose-50 p-4 rounded-xl border border-rose-100">
+                                                <p className="text-[10px] uppercase font-black text-rose-600 tracking-widest mb-1">Unknown in Room</p>
+                                                <p className="text-3xl font-black text-rose-700">{attendanceResult.unrecognized_count ?? 0}</p>
                                             </div>
                                         </div>
                                         
@@ -974,7 +978,15 @@ export default function TeacherUpload({ token }) {
 
                 {/* Finish & Run AI */}
                 <button
-                  onClick={() => { stopLiveDetection(); stopCamera(); handleUploadPhotos(); }}
+                  onClick={() => { 
+                      if (selectedFiles.length === 0) {
+                          alert("Please click the circular capture button to take at least one photo of the class before running AI.");
+                          return;
+                      }
+                      stopLiveDetection(); 
+                      stopCamera(); 
+                      handleUploadPhotos(); 
+                  }}
                   className="px-8 py-4 bg-brand-600 text-white rounded-2xl font-black shadow-xl shadow-brand-900/40 hover:bg-brand-500 transition-all"
                 >
                     Finish &amp; Run AI
