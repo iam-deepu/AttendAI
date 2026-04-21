@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: attendai-backend
+    env: docker
+    plan: starter # Adjust based on needed resources
+    dockerContext: backend
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: MONGO_URI
+        fromConfig: true # User will provide this in Render UI
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PORT
+        value: 8000
