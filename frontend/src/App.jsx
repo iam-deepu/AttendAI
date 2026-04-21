@@ -26,7 +26,7 @@ function App() {
       <div className="min-h-screen bg-gray-50/50 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
         
         {/* Premium Navbar */}
-        <nav className="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-100 shadow-sm">
+        <nav className="hidden md:block bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-100 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               

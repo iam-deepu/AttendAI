@@ -19,6 +19,7 @@ export default function TeacherUpload({ token }) {
   const [profile, setProfile] = useState(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [editData, setEditData] = useState({ name: '', email: '', password: '' });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Detail state
   const [detailMode, setDetailMode] = useState('attendance'); // 'attendance' | 'manage'
@@ -1013,29 +1014,42 @@ export default function TeacherUpload({ token }) {
                <p className="text-[8px] md:text-[9px] font-black text-brand-500 uppercase tracking-widest mt-0.5">Teacher Central</p>
              </div>
           </div>
-          {/* Mobile Disconnect Button */}
+          {/* Hamburger Toggle */}
           <button 
-            onClick={() => { localStorage.removeItem('token'); window.location.reload(); }}
-            className="md:hidden p-2 rounded-xl bg-gray-50 text-red-500 border border-gray-100"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl bg-gray-50 text-gray-600 border border-gray-100"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg>
+            {isMobileMenuOpen ? (
+               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            ) : (
+               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            )}
           </button>
         </div>
 
-        <nav className="flex md:flex-col p-4 md:p-6 space-x-3 md:space-x-0 md:space-y-1.5 overflow-x-auto md:overflow-y-auto custom-scrollbar shrink-0 md:flex-1 items-center md:items-stretch">
-          <button onClick={() => { setActiveTab('classrooms'); setView('list'); setActiveClass(null); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'classrooms' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
-            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        <nav className={`${isMobileMenuOpen ? 'flex absolute top-[88px] left-0 w-full bg-white shadow-2xl border-b border-gray-100 z-50 px-4 pb-4' : 'hidden'} md:flex flex-col p-4 md:p-6 space-y-2 md:space-y-1.5 shrink-0 md:flex-1 items-stretch md:static md:shadow-none md:border-none`}>
+          <button onClick={() => { setActiveTab('classrooms'); setView('list'); setActiveClass(null); setIsMobileMenuOpen(false); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'classrooms' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-transparent md:border-transparent'}`}>
+            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             <span>My Classrooms</span>
           </button>
           
-          <button onClick={() => { setActiveTab('new_classroom'); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'new_classroom' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
-            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          <button onClick={() => { setActiveTab('new_classroom'); setIsMobileMenuOpen(false); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'new_classroom' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-transparent md:border-transparent'}`}>
+            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
             <span>Launch New Hub</span>
           </button>
           
-          <button onClick={() => { setActiveTab('profile'); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'profile' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
-            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          <button onClick={() => { setActiveTab('profile'); setIsMobileMenuOpen(false); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'profile' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-transparent md:border-transparent'}`}>
+            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span>My Profile</span>
+          </button>
+
+          {/* Mobile Disconnect */}
+          <button 
+            onClick={() => { localStorage.removeItem('token'); window.location.reload(); }}
+            className="md:hidden mt-4 w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-red-50 text-red-500 font-bold text-xs"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg>
+            <span>Disconnect</span>
           </button>
         </nav>
 
