@@ -784,30 +784,41 @@ export default function StudentEnroll({ token }) {
   );
 
   return (
-    <div className="flex h-screen bg-[#FDFDFF] overflow-hidden font-sans">
+    <div className="flex flex-col md:flex-row h-screen bg-[#FDFDFF] overflow-hidden font-sans">
       {/* Primary Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0 z-50">
-        <div className="p-8 border-b border-gray-50 flex flex-col items-center">
-          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-xl shadow-indigo-100">
-            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path></svg>
+      <aside className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-gray-100 flex flex-col shrink-0 z-50">
+        <div className="p-4 md:p-8 border-b border-gray-50 flex items-center md:flex-col justify-between md:justify-start">
+          <div className="flex items-center space-x-3 md:space-x-0 md:flex-col md:items-center">
+             <div className="w-10 h-10 md:w-16 md:h-16 bg-indigo-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white md:mb-4 shadow-xl shadow-indigo-100 shrink-0">
+               <svg className="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path></svg>
+             </div>
+             <div>
+               <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tighter">AttendAI</h1>
+               <p className="text-[8px] md:text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Student Hub</p>
+             </div>
           </div>
-          <h1 className="text-lg font-black text-gray-800 tracking-tighter">AttendAI</h1>
-          <p className="text-[9px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Student Hub</p>
+          {/* Mobile Disconnect Button */}
+          <button 
+            onClick={() => { localStorage.removeItem('token'); window.location.reload(); }}
+            className="md:hidden p-2 rounded-xl bg-gray-50 text-red-500 border border-gray-100"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg>
+          </button>
         </div>
 
-        <nav className="flex-1 p-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-          <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <nav className="flex md:flex-col p-4 md:p-6 space-x-3 md:space-x-0 md:space-y-1.5 overflow-x-auto md:overflow-y-auto custom-scrollbar shrink-0 md:flex-1 items-center md:items-stretch">
+          <button onClick={() => setActiveTab('dashboard')} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'dashboard' ? 'bg-indigo-50 text-indigo-700 shadow-sm border border-indigo-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
             <span>My Dashboard</span>
           </button>
           
-          <button onClick={() => setActiveTab('join')} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'join' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <button onClick={() => setActiveTab('join')} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'join' ? 'bg-indigo-50 text-indigo-700 shadow-sm border border-indigo-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Join Class</span>
           </button>
 
-          <button onClick={() => setActiveTab('enroll')} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'enroll' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <button onClick={() => setActiveTab('enroll')} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'enroll' ? 'bg-indigo-50 text-indigo-700 shadow-sm border border-indigo-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>AI Identity</span>
           </button>
           

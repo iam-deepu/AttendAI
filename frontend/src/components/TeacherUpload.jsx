@@ -1000,35 +1000,46 @@ export default function TeacherUpload({ token }) {
   // RENDER: DISPATCHER
 
   return (
-    <div className="flex h-screen bg-[#FDFDFF] overflow-hidden font-sans">
+    <div className="flex flex-col md:flex-row h-screen bg-[#FDFDFF] overflow-hidden font-sans">
       {/* Primary Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-100 flex flex-col shrink-0 z-50">
-        <div className="p-8 border-b border-gray-50 flex flex-col items-center">
-          <div className="w-16 h-16 bg-brand-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-xl shadow-brand-100">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+      <aside className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-gray-100 flex flex-col shrink-0 z-50">
+        <div className="p-4 md:p-8 border-b border-gray-50 flex items-center md:flex-col justify-between md:justify-start">
+          <div className="flex items-center space-x-3 md:space-x-0 md:flex-col md:items-center">
+             <div className="w-10 h-10 md:w-16 md:h-16 bg-brand-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white md:mb-4 shadow-xl shadow-brand-100 shrink-0">
+               <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+             </div>
+             <div>
+               <h1 className="text-base md:text-lg font-black text-gray-800 tracking-tighter">AttendAI</h1>
+               <p className="text-[8px] md:text-[9px] font-black text-brand-500 uppercase tracking-widest mt-0.5">Teacher Central</p>
+             </div>
           </div>
-          <h1 className="text-lg font-black text-gray-800 tracking-tighter">AttendAI</h1>
-          <p className="text-[9px] font-black text-brand-500 uppercase tracking-widest mt-0.5">Teacher Central</p>
+          {/* Mobile Disconnect Button */}
+          <button 
+            onClick={() => { localStorage.removeItem('token'); window.location.reload(); }}
+            className="md:hidden p-2 rounded-xl bg-gray-50 text-red-500 border border-gray-100"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7"></path></svg>
+          </button>
         </div>
 
-        <nav className="flex-1 p-6 space-y-1.5 overflow-y-auto custom-scrollbar">
-          <button onClick={() => { setActiveTab('classrooms'); setView('list'); setActiveClass(null); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'classrooms' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        <nav className="flex md:flex-col p-4 md:p-6 space-x-3 md:space-x-0 md:space-y-1.5 overflow-x-auto md:overflow-y-auto custom-scrollbar shrink-0 md:flex-1 items-center md:items-stretch">
+          <button onClick={() => { setActiveTab('classrooms'); setView('list'); setActiveClass(null); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'classrooms' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             <span>My Classrooms</span>
           </button>
           
-          <button onClick={() => { setActiveTab('new_classroom'); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'new_classroom' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+          <button onClick={() => { setActiveTab('new_classroom'); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'new_classroom' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
             <span>Launch New Hub</span>
           </button>
           
-          <button onClick={() => { setActiveTab('profile'); }} className={`w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-xs font-bold transition-all ${activeTab === 'profile' ? 'bg-brand-50 text-brand-700 shadow-sm' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'}`}>
-            <svg className="w-5 h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          <button onClick={() => { setActiveTab('profile'); }} className={`shrink-0 md:w-full flex items-center space-x-2 md:space-x-3 px-4 py-2 md:py-3.5 rounded-full md:rounded-2xl text-xs font-bold transition-all ${activeTab === 'profile' ? 'bg-brand-50 text-brand-700 shadow-sm border border-brand-100 md:border-none' : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600 border border-gray-100 md:border-transparent'}`}>
+            <svg className="w-4 h-4 md:w-5 md:h-5 shadow-inner" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
             <span>My Profile</span>
           </button>
         </nav>
 
-        <div className="p-6 border-t border-gray-50">
+        <div className="hidden md:block p-6 border-t border-gray-50">
           <button 
             onClick={() => { localStorage.removeItem('token'); window.location.reload(); }}
             className="w-full flex items-center justify-center space-x-2 py-3 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 transition-all font-bold text-xs border border-gray-100"
