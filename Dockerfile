@@ -9,10 +9,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
+    wget \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 USER user
 ENV PATH="/home/user/.local/bin:$PATH"
+
+# Download and extract the buffalo_l AI models
+RUN mkdir -p /home/user/.insightface/models/buffalo_l && \
+    wget -q https://github.com/deepinsight/insightface/releases/download/v0.7/buffalo_l.zip -O /tmp/buffalo_l.zip && \
+    unzip -q /tmp/buffalo_l.zip -d /home/user/.insightface/models/buffalo_l && \
+    rm /tmp/buffalo_l.zip
 
 WORKDIR /app
 
